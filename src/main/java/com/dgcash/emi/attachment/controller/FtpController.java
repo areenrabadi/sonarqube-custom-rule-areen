@@ -2,6 +2,7 @@ package com.dgcash.emi.attachment.controller;
 
 
 import com.dgcash.emi.attachment.busniess.service.FtpService;
+import com.dgcash.emi.attachment.data.dto.FileUploadResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,8 @@ public class FtpController {
     private final FtpService ftpService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName, @RequestParam("filePath") String filePath) {
-        ftpService.uploadFile(file, fileName, filePath);
-        return ResponseEntity.status(HttpStatus.OK).body("File uploaded successfully.");
+    public ResponseEntity<FileUploadResponse> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName, @RequestParam("filePath") String filePath) {
+        return ResponseEntity.status(HttpStatus.OK).body(FileUploadResponse.builder().fileToken(ftpService.uploadFile(file, fileName, filePath)).build());
     }
 
 

@@ -11,6 +11,7 @@ import org.springframework.integration.file.remote.session.Session;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.FileOutputStream;
 
 
@@ -22,8 +23,10 @@ public class FtpService {
     private final PasswordEncoder passwordEncoder;
 
     @SneakyThrows
-    public void uploadFile(MultipartFile file, String fileName, String filePath) {
-        getFtpClient(cachingSessionFactory.getSession()).storeFile(filePath + passwordEncoder.encode(fileName), file.getInputStream());
+    public String uploadFile(MultipartFile file, String fileName, String filePath) {
+        String fileToken = passwordEncoder.encode(fileName);
+        getFtpClient(cachingSessionFactory.getSession()).storeFile(filePath + fileToken, file.getInputStream());
+        return fileToken;
     }
 
     @SneakyThrows
