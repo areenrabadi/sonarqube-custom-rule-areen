@@ -29,6 +29,11 @@ public class FtpController {
         return ResponseEntity.status(HttpStatus.OK).body("File downloaded successfully.");
     }
 
+    @GetMapping("/view")
+    public ResponseEntity<byte[]> viewFile(@RequestParam("fileName") String fileName) {
+        return ResponseEntity.status(HttpStatus.OK).body(ftpService.viewFile(fileName));
+    }
+
     @GetMapping
     public ResponseEntity<Boolean> fileExists(@RequestParam("fileToken") String fileToken, @RequestParam("path") String path) {
         return ResponseEntity.status(HttpStatus.OK).body(ftpService.fileExists(fileToken, path));
