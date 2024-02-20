@@ -8,25 +8,36 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.file.remote.session.Session;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.FileOutputStream;
+
 
 @Service
 @RequiredArgsConstructor
 public class FtpService {
 
     private final SessionFactory<FTPFile> cachingSessionFactory;
+    private final PasswordEncoder passwordEncoder;
 
     @SneakyThrows
-    public void uploadFile(MultipartFile file) {
-        getFtpClient(cachingSessionFactory.getSession()).storeFile(getFileName(file), file.getInputStream());
+    public void uploadFile(MultipartFile file, String fileName, String filePath) {
+        getFtpClient(cachingSessionFactory.getSession()).storeFile(filePath + passwordEncoder.encode(fileName), file.getInputStream());
     }
 
     @SneakyThrows
     public void downloadFile(String file) {
         getFtpClient(cachingSessionFactory.getSession()).retrieveFile(file, new FileOutputStream(file));
+    }
+
+    @SneakyThrows
+    public boolean fileExists(String fileToken, String path) {
+        FTPClient ftpClient = getFtpClient(cachingSessionFactory.getSession());
+        FTPFile[] files = ftpClient.listFiles(path + "/" + fileToken);
+        ftpClient.logout();
+        ftpClient.disconnect();
+        return files.length > 0;
     }
 
     private String getFileName(MultipartFile file) {
