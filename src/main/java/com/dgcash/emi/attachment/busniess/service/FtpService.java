@@ -1,6 +1,7 @@
 package com.dgcash.emi.attachment.busniess.service;
 
 
+import com.dgcash.emi.attachment.busniess.exceptions.FtpClientInitializationException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.net.ftp.FTPClient;
@@ -25,7 +26,12 @@ public class FtpService {
     @SneakyThrows
     public String uploadFile(MultipartFile file, String fileName, String filePath) {
         String fileToken = passwordEncoder.encode(fileName);
-        getFtpClient(cachingSessionFactory.getSession()).storeFile(filePath + fileToken, file.getInputStream());
+        try {
+            getFtpClient(cachingSessionFactory.getSession()).storeFile(filePath + fileToken, file.getInputStream());
+        } catch (Exception e) {
+            throw new FtpClientInitializationException();
+        }
+
         return fileToken;
     }
 
