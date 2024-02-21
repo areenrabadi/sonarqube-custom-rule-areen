@@ -29,16 +29,21 @@ public class FtpService {
     private final SessionFactory<FTPFile> cachingSessionFactory;
     private final PasswordEncoder passwordEncoder;
 
-    @SneakyThrows
     public String uploadFile(MultipartFile file, String fileName, String filePath) {
         String fileToken = passwordEncoder.encode(fileName);
         try {
-            getFtpClient(cachingSessionFactory.getSession()).storeFile(filePath + fileToken, file.getInputStream());
+            validateStoreFile(getFtpClient(cachingSessionFactory.getSession()).storeFile(filePath + fileToken, file.getInputStream()));
         } catch (Exception e) {
             throw new UploadFileException();
         }
-
         return fileToken;
+    }
+
+    private void validateStoreFile(boolean storeFile) {
+        Stream.of(storeFile)
+                .filter(Boolean::booleanValue)
+                .findFirst()
+                .orElseThrow(UploadFileException::new);
     }
 
     @SneakyThrows
@@ -108,6 +113,7 @@ public class FtpService {
         FTPClient ftpClient = (FTPClient) session.getClientInstance();
         ftpClient.setFileType(FTPSClient.BINARY_FILE_TYPE);
         ftpClient.enterLocalPassiveMode();
+        ftpClient.setRestartOffset(0L);
         return ftpClient;
     }
 }
