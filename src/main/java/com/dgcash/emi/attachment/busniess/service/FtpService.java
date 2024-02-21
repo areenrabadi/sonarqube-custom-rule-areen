@@ -5,6 +5,7 @@ import com.dgcash.emi.attachment.busniess.exceptions.FileNotFoundOnFTPException;
 import com.dgcash.emi.attachment.busniess.exceptions.UploadFileException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPSClient;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
@@ -24,19 +24,23 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FtpService {
 
     private final SessionFactory<FTPFile> cachingSessionFactory;
     private final PasswordEncoder passwordEncoder;
 
     public String uploadFile(MultipartFile file, String fileName, String filePath) {
-        String fileToken = passwordEncoder.encode(fileName);
+//        String fileToken = passwordEncoder.encode(fileName);
         try {
-            validateStoreFile(getFtpClient(cachingSessionFactory.getSession()).storeFile(filePath + fileToken, file.getInputStream()));
+            FTPClient ftpClient = getFtpClient(cachingSessionFactory.getSession());
+            boolean storeFile = ftpClient.storeFile(filePath + fileName, file.getInputStream());
+            validateStoreFile(storeFile);
+            disconnectFtpClient(ftpClient);
         } catch (Exception e) {
             throw new UploadFileException();
         }
-        return fileToken;
+        return fileName;
     }
 
     private void validateStoreFile(boolean storeFile) {
