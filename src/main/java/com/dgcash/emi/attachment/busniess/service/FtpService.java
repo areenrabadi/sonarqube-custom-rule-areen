@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPSClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.file.remote.session.Session;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,17 +31,28 @@ public class FtpService {
     private final SessionFactory<FTPFile> cachingSessionFactory;
     private final PasswordEncoder passwordEncoder;
 
-    public String uploadFile(MultipartFile file, String fileName, String filePath) {
-//        String fileToken = passwordEncoder.encode(fileName);
+    @Value("${profile.iban.path}")
+    private String ibanFilePath;
+
+
+    @Value("${profile.vat.path}")
+    private String vatFilePath;
+
+    public String uploadFile(MultipartFile file, String fileName, String fileType) {
         try {
             FTPClient ftpClient = getFtpClient(cachingSessionFactory.getSession());
-            boolean storeFile = ftpClient.storeFile(filePath + fileName, file.getInputStream());
+
+            boolean storeFile = ftpClient.storeFile(getFilePath(fileType) + fileName, file.getInputStream());
             validateStoreFile(storeFile);
             disconnectFtpClient(ftpClient);
         } catch (Exception e) {
             throw new UploadFileException();
         }
         return fileName;
+    }
+
+    private String getFilePath(String fileType) {
+        return fileType.equals("iban") ? ibanFilePath : vatFilePath;
     }
 
     private void validateStoreFile(boolean storeFile) {
@@ -56,19 +68,19 @@ public class FtpService {
     }
 
     @SneakyThrows
-    public boolean fileExists(String fileToken, String path) {
+    public boolean fileExists(String fileToken, String fileType) {
         FTPClient ftpClient = getFtpClient(cachingSessionFactory.getSession());
-        FTPFile[] files = getListFiles(ftpClient, path + "/" + fileToken);
+        FTPFile[] files = getListFiles(ftpClient, getFilePath(fileType) + fileToken);
         disconnectFtpClient(ftpClient);
         return files.length > 0;
     }
 
 
     @SneakyThrows
-    public byte[] viewFile(String fileName) {
+    public byte[] viewFile(String fileName, String fileType) {
         FTPClient ftpClient = getFtpClient(cachingSessionFactory.getSession());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ftpClient.retrieveFile(findFilePath(ftpClient, fileName, "/") + fileName, outputStream);
+        ftpClient.retrieveFile(getFilePath(fileType) + fileName, outputStream);
         byte[] fileBytes = outputStream.toByteArray();
         disconnectFtpClient(ftpClient);
         return fileBytes;
@@ -79,37 +91,8 @@ public class FtpService {
         ftpClient.disconnect();
     }
 
-    @SneakyThrows
-    private String findFilePath(FTPClient ftpClient, String fileName, String currentPath) {
-        FTPFile[] files = getListFiles(ftpClient, currentPath);
-        if (files != null) {
-            return Optional.ofNullable(getFilePath(ftpClient, fileName, currentPath, files).orElse(getFilePathInCurrentDir(fileName, currentPath, files).orElse(null))).orElseThrow(FileNotFoundOnFTPException::new);
-        }
-        return null;
-    }
-
-    private static Optional<String> getFilePathInCurrentDir(String fileName, String currentPath, FTPFile[] files) {
-        return Stream.of(files).filter(file -> checkIfFile(fileName, file)).map(file -> currentPath).findFirst();
-    }
-
-    private Optional<String> getFilePath(FTPClient ftpClient, String fileName, String currentPath, FTPFile[] files) {
-        return Stream.of(files).filter(FtpService::checkIfDirectory).map(file -> currentPath + file.getName() + "/").map(newPath -> findFilePath(ftpClient, fileName, newPath)).findFirst();
-    }
-
-    private static boolean checkIfFile(String fileName, FTPFile file) {
-        return file.isFile() && file.getName().equals(fileName);
-    }
-
-    private static boolean checkIfDirectory(FTPFile file) {
-        return file.isDirectory() && !file.getName().equals(".") && !file.getName().equals("..");
-    }
-
     private static FTPFile[] getListFiles(FTPClient ftpClient, String currentPath) throws IOException {
         return ftpClient.listFiles(currentPath);
-    }
-
-    private String getFileName(MultipartFile file) {
-        return file.getOriginalFilename();
     }
 
     @SneakyThrows

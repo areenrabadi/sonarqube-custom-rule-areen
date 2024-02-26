@@ -18,8 +18,8 @@ public class FtpController {
     private final FtpService ftpService;
 
     @PostMapping("/upload")
-    public ResponseEntity<FileUploadResponse> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName, @RequestParam("filePath") String filePath) {
-        return ResponseEntity.status(HttpStatus.OK).body(FileUploadResponse.builder().fileToken(ftpService.uploadFile(file, fileName, filePath)).build());
+    public ResponseEntity<FileUploadResponse> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName, @RequestParam("fileType") String fileType) {
+        return ResponseEntity.status(HttpStatus.OK).body(FileUploadResponse.builder().fileToken(ftpService.uploadFile(file, fileName, fileType)).build());
     }
 
 
@@ -30,12 +30,12 @@ public class FtpController {
     }
 
     @GetMapping("/view")
-    public ResponseEntity<byte[]> viewFile(@RequestParam("fileName") String fileName) {
-        return ResponseEntity.status(HttpStatus.OK).body(ftpService.viewFile(fileName));
+    public ResponseEntity<byte[]> viewFile(@RequestParam("fileName") String fileName, @RequestParam("fileType") String fileType) {
+        return ResponseEntity.status(HttpStatus.OK).body(ftpService.viewFile(fileName, fileType));
     }
 
     @GetMapping
-    public ResponseEntity<Boolean> fileExists(@RequestParam("fileToken") String fileToken, @RequestParam("path") String path) {
-        return ResponseEntity.status(HttpStatus.OK).body(ftpService.fileExists(fileToken, path));
+    public ResponseEntity<Boolean> fileExists(@RequestParam("fileToken") String fileToken, @RequestParam("fileType") String fileType) {
+        return ResponseEntity.status(HttpStatus.OK).body(ftpService.fileExists(fileToken, fileType));
     }
 }
