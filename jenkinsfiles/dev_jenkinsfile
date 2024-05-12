@@ -49,7 +49,7 @@ pipeline {
 			steps {
 				echo 'Start running the application ...'
 				sh """
-					docker run -m 512m -p 9097:9097  -e EUREKA_SERVER_ADDRESS=http://eurekaservice:8761/eureka -e ACTIVE_PROFILE=dev -d --name attachment-service attachment-service
+					docker run  -p 9097:9097  -e EUREKA_SERVER_ADDRESS=http://eurekaservice:8761/eureka -e ACTIVE_PROFILE=dev -d --name attachment-service attachment-service
 				"""
 				echo 'End running the application ...'
 			}
