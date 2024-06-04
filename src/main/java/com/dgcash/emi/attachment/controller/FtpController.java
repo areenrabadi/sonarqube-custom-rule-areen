@@ -11,22 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/file")
+@RequestMapping("/file")
 public class FtpController {
-
 
     private final FtpService ftpService;
 
     @PostMapping("/upload")
     public ResponseEntity<FileUploadResponse> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName, @RequestParam("fileType") String fileType) {
         return ResponseEntity.status(HttpStatus.OK).body(FileUploadResponse.builder().fileToken(ftpService.uploadFile(file, fileName, fileType)).build());
-    }
-
-
-    @GetMapping("/download")
-    public ResponseEntity<String> downloadFile(@RequestParam("fileName") String fileName) {
-        ftpService.downloadFile(fileName);
-        return ResponseEntity.status(HttpStatus.OK).body("File downloaded successfully.");
     }
 
     @GetMapping("/view")
