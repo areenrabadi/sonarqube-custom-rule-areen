@@ -47,7 +47,7 @@ public class FtpService {
     }
 
     private String getFilePath(String fileType) {
-        return files.getOrDefault(fileType, files.get("default.path"));
+        return files.getOrDefault(fileType, files.get("default"));
     }
 
     private void validateStoreFile(boolean storeFile) {
