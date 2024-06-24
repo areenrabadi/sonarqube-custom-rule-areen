@@ -1,7 +1,6 @@
 package com.dgcash.emi.attachment.busniess.service;
 
 
-import com.dgcash.emi.attachment.busniess.exceptions.FileNotFoundOnFTPException;
 import com.dgcash.emi.attachment.busniess.exceptions.UploadFileException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Stream;
 
 
@@ -31,12 +30,8 @@ public class FtpService {
     private final SessionFactory<FTPFile> cachingSessionFactory;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${profile.iban.path}")
-    private String ibanFilePath;
-
-
-    @Value("${profile.vat.path}")
-    private String vatFilePath;
+    @Value("#{${file.paths}}")
+    private Map<String, String> files;
 
     public String uploadFile(MultipartFile file, String fileName, String fileType) {
         try {
@@ -52,7 +47,7 @@ public class FtpService {
     }
 
     private String getFilePath(String fileType) {
-        return fileType.equals("iban") ? ibanFilePath : vatFilePath;
+        return files.getOrDefault(fileType, files.get("default.path"));
     }
 
     private void validateStoreFile(boolean storeFile) {
