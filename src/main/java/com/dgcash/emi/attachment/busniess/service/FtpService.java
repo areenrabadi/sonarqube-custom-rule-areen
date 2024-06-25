@@ -9,8 +9,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.file.remote.session.Session;
+import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 
@@ -37,6 +38,7 @@ public class FtpService {
         try {
             FTPClient ftpClient = getFtpClient(cachingSessionFactory.getSession());
 
+            fileName = UUID.randomUUID() + fileName;
             boolean storeFile = ftpClient.storeFile(getFilePath(fileType) + fileName, file.getInputStream());
             validateStoreFile(storeFile);
             disconnectFtpClient(ftpClient);
