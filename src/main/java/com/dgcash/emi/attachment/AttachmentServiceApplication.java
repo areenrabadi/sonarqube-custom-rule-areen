@@ -16,5 +16,4 @@ public class AttachmentServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(AttachmentServiceApplication.class, args);
     }
-
 }
