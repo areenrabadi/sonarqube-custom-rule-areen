@@ -39,6 +39,7 @@ public class FtpService {
             FTPClient ftpClient = getFtpClient(cachingSessionFactory.getSession());
 
             fileName = UUID.randomUUID() + fileName;
+            ftpClient.makeDirectory(getFilePath(fileType) + fileName);
             boolean storeFile = ftpClient.storeFile(getFilePath(fileType) + fileName, file.getInputStream());
             validateStoreFile(storeFile);
             disconnectFtpClient(ftpClient);
