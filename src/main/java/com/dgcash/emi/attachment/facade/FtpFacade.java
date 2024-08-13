@@ -49,9 +49,6 @@ public class FtpFacade {
             String fileExtension = multipartFile.getContentType();
             Long fileSize = multipartFile.getSize();
             String fileToken = generateFileToken(fileName, fileSize, fileExtension);
-            log.info("Uploading file {} to FTP", fileExtension);
-            log.info("Uploading file {} to FTP", fileType);
-            log.info("Uploading file {} to FTP", fileToken);
 
 
             Setting settings = settingService.getSettingsByFileType(fileType, fileExtension)
@@ -63,7 +60,7 @@ public class FtpFacade {
 
             ftpService.uploadFile(multipartFile, fileName, filePath);
 
-            attachmentFacade.create(getAttachment(fileToken, fileToken, filePath, fileSize, settings, fileExtension));
+            attachmentFacade.create(getAttachment(fileName, fileToken, filePath, fileSize, settings, fileExtension));
             return fileToken;
         } catch (Exception e) {
             log.error(e.getMessage(), e);

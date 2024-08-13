@@ -28,9 +28,9 @@ public class FtpController {
     }
 
     @GetMapping("/view")
-    public ResponseEntity<byte[]> viewFile(@RequestParam("fileName") String fileName,
+    public ResponseEntity<byte[]> viewFile(@RequestParam("fileToken") String fileToken,
                                            @RequestParam("fileType") String fileType) {
-        return ResponseEntity.status(HttpStatus.OK).body(ftpFacade.viewFile(fileName, fileType));
+        return ResponseEntity.status(HttpStatus.OK).body(ftpFacade.viewFile(fileToken, fileType));
     }
 
 
