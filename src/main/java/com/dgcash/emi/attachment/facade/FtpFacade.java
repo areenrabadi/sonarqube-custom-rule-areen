@@ -4,6 +4,7 @@ import com.dgcash.emi.attachment.busniess.exceptions.SettingsNotFoundException;
 import com.dgcash.emi.attachment.busniess.exceptions.UploadFileException;
 import com.dgcash.emi.attachment.busniess.service.FtpService;
 import com.dgcash.emi.attachment.busniess.service.SettingService;
+import com.dgcash.emi.attachment.data.dto.request.AttachmentRequest;
 import com.dgcash.emi.attachment.data.dto.request.FileUploadResponse;
 import com.dgcash.emi.attachment.data.dto.response.AttachmentResponse;
 import com.dgcash.emi.attachment.data.entities.Attachment;
@@ -48,6 +49,7 @@ public class FtpFacade {
             String fileExtension = multipartFile.getContentType();
             Long fileSize = multipartFile.getSize();
             String fileToken = generateFileToken(fileName, fileSize, fileExtension);
+            log.info("Uploading file {} to FTP", fileExtension);
 
             Setting settings = settingService.getSettingsByFileType(fileType, fileExtension)
                     .orElseThrow(SettingsNotFoundException::new);
