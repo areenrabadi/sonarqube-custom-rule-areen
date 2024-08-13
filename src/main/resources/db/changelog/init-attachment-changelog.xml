@@ -133,7 +133,7 @@
                                  constraintName="fk_setext_on_setting" referencedColumnNames="id"
                                  referencedTableName="settings"/>
     </changeSet>
-    <changeSet id="1723541291283-12" author="Ali Alkhatib">
-        <sqlFile path="/db/changelog/insert_initial_data.sql" />
-    </changeSet>
+<!--    <changeSet id="1723541291283-12" author="Ali Alkhatib">-->
+<!--        <sqlFile path="/db/changelog/insert_initial_data.sql" />-->
+<!--    </changeSet>-->
 </databaseChangeLog>
