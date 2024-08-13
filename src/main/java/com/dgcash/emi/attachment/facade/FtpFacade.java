@@ -54,11 +54,11 @@ public class FtpFacade {
             Setting settings = settingService.getSettingsByFileType(fileType, fileExtension)
                     .orElseThrow(SettingsNotFoundException::new);
 
-            String filePath = replacePlaceHolders(parameters, settings.getDirectoryPattern());
+            String filePath = "files/" + replacePlaceHolders(parameters, settings.getDirectoryPattern());
 
             validateFileSize(settings.getMaxAllowedSize(), fileSize);
 
-            ftpService.uploadFile(multipartFile, fileToken, filePath);
+            ftpService.uploadFile(multipartFile, fileName, filePath);
 
             attachmentFacade.create(getAttachment(fileToken, fileToken, filePath, fileSize, settings, fileExtension));
             return fileToken;

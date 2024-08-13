@@ -75,7 +75,7 @@ public class FtpService {
         for (String directory : directories) {
             if (!directory.isEmpty()) {
                 currentPath.append("/").append(directory);
-                if (!directoryExists(ftpClient, currentPath.toString())) {
+                if (!ftpClient.changeWorkingDirectory(currentPath.toString())) {
                     ftpClient.makeDirectory(currentPath.toString());
                 }
             }
