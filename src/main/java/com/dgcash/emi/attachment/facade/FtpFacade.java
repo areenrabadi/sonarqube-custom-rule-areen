@@ -62,6 +62,7 @@ public class FtpFacade {
             attachmentFacade.create(getAttachment(fileToken, fileToken, filePath, fileSize, settings, fileExtension));
             return fileToken;
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new UploadFileException();
         }
     }
@@ -84,7 +85,7 @@ public class FtpFacade {
     }
 
     private Attachment getAttachment(String fileName, String fileToken, String filePath, Long fileSize,
-                                            Setting setting, String fileExtension) {
+                                     Setting setting, String fileExtension) {
 
         Attachment attachment = new Attachment();
         attachment.setToken(fileToken);
