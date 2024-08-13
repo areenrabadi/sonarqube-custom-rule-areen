@@ -1,27 +1,34 @@
 package com.dgcash.emi.attachment.util;
 
-import com.dgcash.emi.attachment.data.dto.request.Field;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.function.BinaryOperator;
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
 
 public class StringUtil {
 
     private StringUtil() {
     }
 
-    public static String replacePlaceHolders(List<Field> fields, String directoryPattern) {
-        Map<String, String> fieldsMap = fields.stream().collect(Collectors.toMap(Field::getName, Field::getValue));
-        for (Map.Entry<String, String> arg : fieldsMap.entrySet()) {
-            directoryPattern = StringUtils
-                    .replace(directoryPattern, getPlaceHolderForArgument(arg.getKey()), arg.getValue());
-        }
-        return directoryPattern;
+    public static String replacePlaceHolders(Map<String, String> fields, String directoryPattern) {
+        return extractFields(directoryPattern)
+                .stream()
+                .reduce(directoryPattern, operator(fields));
     }
 
-    private static String getPlaceHolderForArgument(String key) {
-        return "{?" + key + "}";
+    private static BinaryOperator<String> operator(Map<String, String> fields) {
+        return (pattern, extractedField) -> StringUtils
+                .replace(pattern, extractedField, fields.get(extractedField.substring(2, extractedField.length() - 1)));
+    }
+
+    private static List<String> extractFields(String directoryPattern) {
+        return Pattern.compile("\\{\\?([^}]+)}")
+                .matcher(directoryPattern)
+                .results()
+                .map(MatchResult::group)
+                .toList();
     }
 }

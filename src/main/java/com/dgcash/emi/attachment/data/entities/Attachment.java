@@ -23,11 +23,11 @@ public class Attachment extends AuditableEntityBase {
     @Column(nullable = false)
     private String token;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false)
     private Type type;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false)
     private Extension extension;
 }

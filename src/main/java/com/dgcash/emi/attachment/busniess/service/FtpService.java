@@ -25,25 +25,13 @@ public class FtpService {
 
     private final SessionFactory<FTPFile> cachingSessionFactory;
 
-    /**
-     * Uploads a file to the FTP server, creating the necessary directory structure if it does not exist.
-     *
-     * @param file            The file to upload.
-     * @param fileName        The name of the file to be stored.
-     * @param directoryPattern The directory pattern where the file should be stored.
-     * @throws UploadFileException if the file upload fails.
-     */
     public void uploadFile(MultipartFile file, String fileName, String directoryPattern) {
         try {
-            // Get an FTP client instance from the session factory
             FTPClient ftpClient = getFtpClient(cachingSessionFactory.getSession());
 
-            // Create the directory structure if it does not exist
             createDirectoryIfNotExist(ftpClient, directoryPattern);
 
-            // Attempt to store the file on the FTP server and validate if the file was successfully stored
             boolean storeFile = ftpClient.storeFile(directoryPattern + fileName, file.getInputStream());
-            log.info("File stored: fileName={}, storeSuccessful={}", fileName, storeFile);
             validateStoreFile(storeFile);
 
             disconnectFtpClient(ftpClient);

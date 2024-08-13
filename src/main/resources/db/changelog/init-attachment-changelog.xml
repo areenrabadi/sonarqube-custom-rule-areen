@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
-    <changeSet id="1723413601253-1" author="Ali Alkhatib">
+    <changeSet id="1723541291283-1" author="Ali Alkhatib">
         <createTable tableName="attachments">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_attachments"/>
@@ -38,17 +38,25 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="1723413601253-2" author="Ali Alkhatib">
+    <changeSet id="1723541291283-2" author="Ali Alkhatib">
         <createTable tableName="extensions">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_extensions"/>
             </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="last_modified_by" type="BIGINT"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="deleted_by" type="BIGINT"/>
             <column name="name" type="VARCHAR(255)"/>
             <column name="code" type="VARCHAR(255)"/>
             <column name="description" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet id="1723413601253-3" author="Ali Alkhatib">
+    <changeSet id="1723541291283-3" author="Ali Alkhatib">
         <createTable tableName="setting_extensions">
             <column name="extension_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -58,7 +66,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="1723413601253-4" author="Ali Alkhatib">
+    <changeSet id="1723541291283-4" author="Ali Alkhatib">
         <createTable tableName="settings">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_settings"/>
@@ -80,54 +88,52 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="1723413601253-5" author="Ali Alkhatib">
+    <changeSet id="1723541291283-5" author="Ali Alkhatib">
         <createTable tableName="types">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_types"/>
             </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="last_modified_by" type="BIGINT"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="deleted_by" type="BIGINT"/>
             <column name="name" type="VARCHAR(255)"/>
             <column name="code" type="VARCHAR(255)"/>
             <column name="description" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet id="1723413601253-6" author="Ali Alkhatib">
-        <addUniqueConstraint columnNames="extension_id" constraintName="uc_attachments_extension"
-                             tableName="attachments"/>
-    </changeSet>
-    <changeSet id="1723413601253-7" author="Ali Alkhatib">
-        <addUniqueConstraint columnNames="type_id" constraintName="uc_attachments_type" tableName="attachments"/>
-    </changeSet>
-    <changeSet id="1723413601253-8" author="Ali Alkhatib">
+    <changeSet id="1723541291283-6" author="Ali Alkhatib">
         <addUniqueConstraint columnNames="type_id" constraintName="uc_settings_type" tableName="settings"/>
     </changeSet>
-    <changeSet id="1723413601253-9" author="Ali Alkhatib">
+    <changeSet id="1723541291283-7" author="Ali Alkhatib">
         <addForeignKeyConstraint baseColumnNames="extension_id" baseTableName="attachments"
                                  constraintName="FK_ATTACHMENTS_ON_EXTENSION" referencedColumnNames="id"
                                  referencedTableName="extensions"/>
     </changeSet>
-    <changeSet id="1723413601253-10" author="Ali Alkhatib">
+    <changeSet id="1723541291283-8" author="Ali Alkhatib">
         <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="attachments"
                                  constraintName="FK_ATTACHMENTS_ON_TYPE" referencedColumnNames="id"
                                  referencedTableName="types"/>
     </changeSet>
-    <changeSet id="1723413601253-11" author="Ali Alkhatib">
+    <changeSet id="1723541291283-9" author="Ali Alkhatib">
         <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="settings" constraintName="FK_SETTINGS_ON_TYPE"
                                  referencedColumnNames="id" referencedTableName="types"/>
     </changeSet>
-    <changeSet id="1723413601253-12" author="Ali Alkhatib">
+    <changeSet id="1723541291283-10" author="Ali Alkhatib">
         <addForeignKeyConstraint baseColumnNames="extension_id" baseTableName="setting_extensions"
                                  constraintName="fk_setext_on_extension" referencedColumnNames="id"
                                  referencedTableName="extensions"/>
     </changeSet>
-    <changeSet id="1723413601253-13" author="Ali Alkhatib">
+    <changeSet id="1723541291283-11" author="Ali Alkhatib">
         <addForeignKeyConstraint baseColumnNames="setting_id" baseTableName="setting_extensions"
                                  constraintName="fk_setext_on_setting" referencedColumnNames="id"
                                  referencedTableName="settings"/>
     </changeSet>
-
-    <changeSet id="1723413601253-14" author="Ali Alkhatib">
-        <sqlFile path="db/changelog/insert_initial_data.sql"
-                 splitStatements="true"
-                 stripComments="true"/>
+    <changeSet id="1723541291283-12" author="Ali Alkhatib">
+        <sqlFile path="/db/changelog/insert_initial_data.sql" />
     </changeSet>
 </databaseChangeLog>

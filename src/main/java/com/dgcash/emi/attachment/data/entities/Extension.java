@@ -1,6 +1,6 @@
 package com.dgcash.emi.attachment.data.entities;
 
-import com.dgcash.common.core.data.entities.EntityBase;
+import com.dgcash.common.core.data.entities.AuditableEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "EXTENSIONS")
-public class Extension extends EntityBase {
+public class Extension extends AuditableEntityBase {
 
     @Column
     private String name;

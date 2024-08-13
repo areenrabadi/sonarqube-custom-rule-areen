@@ -1,4 +1,4 @@
-package com.dgcash.emi.attachment.data.dto.response;
+package com.dgcash.emi.attachment.data.dto.request;
 
 import lombok.Builder;
 import lombok.Data;

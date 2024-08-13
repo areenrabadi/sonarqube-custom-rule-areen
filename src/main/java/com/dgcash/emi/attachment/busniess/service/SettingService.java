@@ -7,17 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-/**
- * Service for managing settings entities, particularly for retrieving settings based on file type.
- * This service interacts with the {@link SettingRepository} for database operations.
- *
- * <p>
- * Provides methods for fetching settings related to specific file types.
- * </p>
- *
- * @author Ali Alkhatib
- * @since 2024-08-12
- */
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -25,15 +19,36 @@ public class SettingService {
 
     private final SettingRepository settingRepository;
 
-    /**
-     * Retrieves settings from the database based on the file type.
-     *
-     * @param fileType The type of the file whose settings are to be retrieved.
-     * @return The {@link Setting} entity matching the given file type.
-     * @throws SettingsNotFoundException if no matching settings are found.
-     */
-    public Setting getSettingsByFileType(String fileType) {
-        log.info("Fetching settings for file type: {}", fileType);
-        return settingRepository.findByType_Code(fileType).orElseThrow(SettingsNotFoundException::new);
+    public Optional<Setting> getSettingsByFileType(String fileType, String extension) {
+        return settingRepository.findByFileTypeAndExtension(fileType, extension);
+    }
+
+    public Setting create(Setting setting) {
+        return settingRepository.save(setting);
+    }
+
+    public Optional<Setting> getById(Long id) {
+        return settingRepository.findById(id);
+    }
+
+    public List<Setting> getAll() {
+        return settingRepository.findAll();
+    }
+
+    public Setting update(Setting setting) {
+        Setting settingEntity = settingRepository.findById(setting.getId()).orElseThrow(SettingsNotFoundException::new);
+
+        settingEntity.setType(setting.getType());
+        settingEntity.setExtensions(setting.getExtensions());
+        settingEntity.setDirectoryPattern(setting.getDirectoryPattern());
+        settingEntity.setMaxAllowedSize(setting.getMaxAllowedSize());
+
+        return settingEntity;
+    }
+
+    public void delete(Long id) {
+        Setting setting = settingRepository.findById(id).orElseThrow(SettingsNotFoundException::new);
+        setting.setDeletedAt(Timestamp.from(Instant.now()));
+        settingRepository.save(setting);
     }
 }
