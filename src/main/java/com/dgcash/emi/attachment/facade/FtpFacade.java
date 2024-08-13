@@ -49,6 +49,7 @@ public class FtpFacade {
             String fileExtension = multipartFile.getContentType();
             Long fileSize = multipartFile.getSize();
             String fileToken = generateFileToken(fileName, fileSize, fileExtension);
+            log.info("Uploading file {} to FTP", fileExtension);
 
             Setting settings = settingService.getSettingsByFileType(fileType, fileExtension)
                     .orElseThrow(SettingsNotFoundException::new);
