@@ -57,7 +57,7 @@ public class FtpFacade {
             Setting settings = settingService.getSettingsByFileType(fileType, fileExtension)
                     .orElseThrow(SettingsNotFoundException::new);
 
-            String filePath = "/files/" + replacePlaceHolders(parameters, settings.getDirectoryPattern());
+            String filePath = replacePlaceHolders(parameters, settings.getDirectoryPattern());
 
             validateFileSize(settings.getMaxAllowedSize(), fileSize);
 
