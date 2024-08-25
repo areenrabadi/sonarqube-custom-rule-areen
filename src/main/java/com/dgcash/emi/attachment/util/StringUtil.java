@@ -1,5 +1,6 @@
 package com.dgcash.emi.attachment.util;
 
+import com.dgcash.emi.attachment.busniess.exceptions.NotProvidedFieldException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -16,7 +17,14 @@ public class StringUtil {
     public static String replacePlaceHolders(Map<String, String> fields, String directoryPattern) {
         return extractFields(directoryPattern)
                 .stream()
+                .peek(f -> validateFieldIfExist(fields, f.substring(2, f.length() - 1)))
                 .reduce(directoryPattern, operator(fields));
+    }
+
+    private static void validateFieldIfExist(Map<String, String> fields, String field) {
+        if (!fields.containsKey(field)) {
+            throw new NotProvidedFieldException();
+        }
     }
 
     private static BinaryOperator<String> operator(Map<String, String> fields) {
