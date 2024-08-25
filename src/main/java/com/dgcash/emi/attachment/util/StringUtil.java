@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
@@ -22,9 +24,7 @@ public class StringUtil {
     }
 
     private static void validateFieldIfExist(Map<String, String> fields, String field) {
-        if (!fields.containsKey(field)) {
-            throw new NotProvidedFieldException();
-        }
+        Optional.ofNullable(fields.get(field)).orElseThrow(NotProvidedFieldException::new);
     }
 
     private static BinaryOperator<String> operator(Map<String, String> fields) {
