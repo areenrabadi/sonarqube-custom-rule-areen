@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringBootApplication
-@EnableFeignClients
+@SpringBootApplication(scanBasePackages = {"com.dgcash"})
+@EnableFeignClients(basePackages = {"com.dgcash"})
 @EnableDiscoveryClient
 @OpenAPIDefinition(info = @Info(title = "Attachment API", version = "1.0", description = "Documentation Attachment API v1.0"))
 public class AttachmentServiceApplication {

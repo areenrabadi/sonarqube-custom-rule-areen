@@ -1,10 +1,8 @@
 package com.dgcash.emi.attachment.facade;
 
 import com.dgcash.emi.attachment.busniess.exceptions.SettingsNotFoundException;
-import com.dgcash.emi.attachment.busniess.exceptions.UploadFileException;
 import com.dgcash.emi.attachment.busniess.service.FtpService;
 import com.dgcash.emi.attachment.busniess.service.SettingService;
-import com.dgcash.emi.attachment.data.dto.request.AttachmentRequest;
 import com.dgcash.emi.attachment.data.dto.request.FileUploadResponse;
 import com.dgcash.emi.attachment.data.dto.response.AttachmentResponse;
 import com.dgcash.emi.attachment.data.entities.Attachment;
@@ -45,30 +43,24 @@ public class FtpFacade {
 
     public String uploadFile(MultipartFile multipartFile, String fileName, String fileType,
                              Map<String, String> parameters) {
-        try {
-            String fileExtension = multipartFile.getContentType();
-            Long fileSize = multipartFile.getSize();
-            String fileToken = generateFileToken(fileName, fileSize, fileExtension);
-            log.info("Uploading file {} to FTP", fileExtension);
-            log.info("Uploading file {} to FTP", fileType);
-            log.info("Uploading file {} to FTP", fileToken);
 
+        String fileExtension = multipartFile.getContentType();
+        Long fileSize = multipartFile.getSize();
+        String fileToken = generateFileToken(fileName, fileSize, fileExtension);
 
-            Setting settings = settingService.getSettingsByFileType(fileType, fileExtension)
-                    .orElseThrow(SettingsNotFoundException::new);
+        log.info("Attach file with Extension:{}, Type:{} and Token:{} to FTP", fileExtension, fileType, fileToken);
 
-            String filePath = replacePlaceHolders(parameters, settings.getDirectoryPattern());
+        Setting settings = settingService.getSettingsByFileType(fileType, fileExtension)
+                .orElseThrow(SettingsNotFoundException::new);
 
-            validateFileSize(settings.getMaxAllowedSize(), fileSize);
+        String filePath = replacePlaceHolders(parameters, settings.getDirectoryPattern());
 
-            ftpService.uploadFile(multipartFile, fileName, filePath);
+        validateFileSize(settings.getMaxAllowedSize(), fileSize);
 
-            attachmentFacade.create(getAttachment(fileName, fileToken, filePath, fileSize, settings, fileExtension));
-            return fileToken;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new UploadFileException();
-        }
+        ftpService.uploadFile(multipartFile, fileName, filePath);
+
+        attachmentFacade.create(getAttachment(fileName, fileToken, filePath, fileSize, settings, fileExtension));
+        return fileToken;
     }
 
     public byte[] viewFile(String fileToken, String fileType) {
