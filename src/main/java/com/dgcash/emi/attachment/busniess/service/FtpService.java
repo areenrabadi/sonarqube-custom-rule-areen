@@ -36,6 +36,7 @@ public class FtpService {
 
             disconnectFtpClient(ftpClient);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new UploadFileException();
         }
     }
