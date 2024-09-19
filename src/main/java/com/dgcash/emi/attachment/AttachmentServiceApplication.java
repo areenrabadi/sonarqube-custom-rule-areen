@@ -13,7 +13,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableDiscoveryClient
 @OpenAPIDefinition( servers = {
         @Server(url = "http://localhost:9097", description = "Attachment Service"),
-        @Server(url = "http://localhost:8081/api/v1/otp", description = "Attachment through gateway Service")},
+        @Server(url = "http://localhost:8081/api/v1", description = "Attachment through gateway Service")},
 
         info = @Info(title = "Attachment Service", version = "1.0", description = "Attachment Service API"))
 public class AttachmentServiceApplication {
