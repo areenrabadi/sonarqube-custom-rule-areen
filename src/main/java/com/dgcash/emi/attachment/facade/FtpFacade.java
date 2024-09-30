@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static com.dgcash.emi.attachment.util.FileUtil.generateFileToken;
@@ -100,5 +101,11 @@ public class FtpFacade {
                 .filter(e -> e.getCode().equals(fileExtension))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public String viewFileContents(String fileToken, String fileType) throws IOException {
+        AttachmentResponse attachmentResponse = attachmentFacade.getAttachmentByTokenAndType(fileToken, fileType);
+        return ftpService.viewFileContents(attachmentResponse.getFileName(), attachmentResponse.getFilePath());
+
     }
 }
