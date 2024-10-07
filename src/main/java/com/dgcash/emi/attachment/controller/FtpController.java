@@ -11,6 +11,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/file")
@@ -33,12 +35,16 @@ public class FtpController {
         return ResponseEntity.status(HttpStatus.OK).body(ftpFacade.viewFile(fileToken, fileType));
     }
 
-
     @GetMapping
     public ResponseEntity<Boolean> fileExists(@RequestParam("fileToken") String fileToken,
                                               @RequestParam("fileType") String fileType) {
         boolean exists = ftpFacade.fileExists(fileToken, fileType);
         return ResponseEntity.status(HttpStatus.OK).body(exists);
+    }
+
+    @GetMapping("/view/contents")
+    public ResponseEntity<String> viewFileContents(@RequestParam("fileToken") String fileToken, @RequestParam("fileType") String fileType) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(ftpFacade.viewFileContents(fileToken, fileType));
     }
 
     @PostMapping("/attachment/upload")
