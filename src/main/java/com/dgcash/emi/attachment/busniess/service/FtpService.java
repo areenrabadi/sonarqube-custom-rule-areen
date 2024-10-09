@@ -2,6 +2,7 @@ package com.dgcash.emi.attachment.busniess.service;
 
 
 import com.dgcash.emi.attachment.busniess.exceptions.UploadFileException;
+import com.dgcash.emi.attachment.data.dto.FileContent;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -116,7 +117,7 @@ public class FtpService {
 
 
 
-    public String viewFileContents(String fileName, String filePath) {
+    public FileContent viewFileContents(String fileName, String filePath) {
         Path tempFilePath;
         try {
             tempFilePath = Files.createTempFile("temp", ".pdf");
@@ -126,7 +127,7 @@ public class FtpService {
         FTPClient ftpClient = getFtpClient(cachingSessionFactory.getSession());
         try (
              PDDocument document = loadPdfDocument(ftpClient, filePath, fileName, tempFilePath)) {
-            return extractContentFromPdf(document);
+            return new FileContent( extractContentFromPdf(document));
         } catch (IOException e) {
             throw new RuntimeException("Failed to view file contents", e);
         } finally {
@@ -162,7 +163,7 @@ public class FtpService {
             pdfStripper.setEndPage(page);
             String extractedText = pdfStripper.getText(document);
             String contentBody = extractContentBody(extractedText);
-            return page + ":\n" + contentBody + "\n\n";
+            return contentBody + "\n\n";
         } catch (IOException e) {
             throw new RuntimeException("Failed to fetch content", e);
         }
