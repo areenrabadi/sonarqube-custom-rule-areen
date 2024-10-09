@@ -1,5 +1,6 @@
 package com.dgcash.emi.attachment.controller;
 
+import com.dgcash.emi.attachment.data.dto.FileContent;
 import com.dgcash.emi.attachment.data.dto.response.AttachmentResponse;
 import com.dgcash.emi.attachment.data.dto.request.FileUploadResponse;
 import com.dgcash.emi.attachment.facade.FtpFacade;
@@ -43,7 +44,7 @@ public class FtpController {
     }
 
     @GetMapping("/view/contents")
-    public ResponseEntity<String> viewFileContents(@RequestParam("fileToken") String fileToken, @RequestParam("fileType") String fileType) throws IOException {
+    public ResponseEntity<FileContent> viewFileContents(@RequestParam("fileToken") String fileToken, @RequestParam("fileType") String fileType) throws IOException {
         return ResponseEntity.status(HttpStatus.OK).body(ftpFacade.viewFileContents(fileToken, fileType));
     }
 
