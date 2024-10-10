@@ -1,5 +1,6 @@
 package com.dgcash.emi.attachment.controller;
 
+import com.dgcash.emi.attachment.data.dto.FileContent;
 import com.dgcash.emi.attachment.data.dto.response.AttachmentResponse;
 import com.dgcash.emi.attachment.data.dto.request.FileUploadResponse;
 import com.dgcash.emi.attachment.facade.FtpFacade;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,12 +36,16 @@ public class FtpController {
         return ResponseEntity.status(HttpStatus.OK).body(ftpFacade.viewFile(fileToken, fileType));
     }
 
-
     @GetMapping
     public ResponseEntity<Boolean> fileExists(@RequestParam("fileToken") String fileToken,
                                               @RequestParam("fileType") String fileType) {
         boolean exists = ftpFacade.fileExists(fileToken, fileType);
         return ResponseEntity.status(HttpStatus.OK).body(exists);
+    }
+
+    @GetMapping("/view/contents")
+    public ResponseEntity<FileContent> viewFileContents(@RequestParam("fileToken") String fileToken, @RequestParam("fileType") String fileType) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(ftpFacade.viewFileContents(fileToken, fileType));
     }
 
     @PostMapping("/attachment/upload")

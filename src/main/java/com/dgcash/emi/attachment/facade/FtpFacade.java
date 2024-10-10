@@ -3,6 +3,7 @@ package com.dgcash.emi.attachment.facade;
 import com.dgcash.emi.attachment.busniess.exceptions.SettingsNotFoundException;
 import com.dgcash.emi.attachment.busniess.service.FtpService;
 import com.dgcash.emi.attachment.busniess.service.SettingService;
+import com.dgcash.emi.attachment.data.dto.FileContent;
 import com.dgcash.emi.attachment.data.dto.request.FileUploadResponse;
 import com.dgcash.emi.attachment.data.dto.response.AttachmentResponse;
 import com.dgcash.emi.attachment.data.entities.Attachment;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static com.dgcash.emi.attachment.util.FileUtil.generateFileToken;
@@ -100,5 +102,11 @@ public class FtpFacade {
                 .filter(e -> e.getCode().equals(fileExtension))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public FileContent viewFileContents(String fileToken, String fileType){
+        AttachmentResponse attachmentResponse = attachmentFacade.getAttachmentByTokenAndType(fileToken, fileType);
+        return ftpService.viewFileContents(attachmentResponse.getFileName(), attachmentResponse.getFilePath());
+
     }
 }
