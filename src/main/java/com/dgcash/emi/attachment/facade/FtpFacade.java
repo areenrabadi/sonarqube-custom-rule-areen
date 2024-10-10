@@ -3,6 +3,7 @@ package com.dgcash.emi.attachment.facade;
 import com.dgcash.emi.attachment.busniess.exceptions.SettingsNotFoundException;
 import com.dgcash.emi.attachment.busniess.service.FtpService;
 import com.dgcash.emi.attachment.busniess.service.SettingService;
+import com.dgcash.emi.attachment.data.dto.FileContent;
 import com.dgcash.emi.attachment.data.dto.request.FileUploadResponse;
 import com.dgcash.emi.attachment.data.dto.response.AttachmentResponse;
 import com.dgcash.emi.attachment.data.entities.Attachment;
@@ -103,7 +104,7 @@ public class FtpFacade {
                 .orElseThrow();
     }
 
-    public String viewFileContents(String fileToken, String fileType) throws IOException {
+    public FileContent viewFileContents(String fileToken, String fileType){
         AttachmentResponse attachmentResponse = attachmentFacade.getAttachmentByTokenAndType(fileToken, fileType);
         return ftpService.viewFileContents(attachmentResponse.getFileName(), attachmentResponse.getFilePath());
 
