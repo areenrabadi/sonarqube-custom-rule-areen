@@ -1,8 +1,10 @@
 package com.dgcash.emi.attachment.controller;
 
 import com.dgcash.emi.attachment.data.dto.FileContent;
+import com.dgcash.emi.attachment.data.dto.request.GenerateNewTokenRequest;
 import com.dgcash.emi.attachment.data.dto.response.AttachmentResponse;
 import com.dgcash.emi.attachment.data.dto.request.FileUploadResponse;
+import com.dgcash.emi.attachment.facade.AttachmentFacade;
 import com.dgcash.emi.attachment.facade.FtpFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.io.IOException;
 public class FtpController {
 
     private final FtpFacade ftpFacade;
+    private final AttachmentFacade attachmentFacade;
 
 
     @PostMapping("/upload")
@@ -58,5 +61,10 @@ public class FtpController {
     public ResponseEntity<AttachmentResponse> getFileAttachment(@RequestParam("fileToken") String fileToken,
                                                                 @RequestParam("fileType") String fileType) {
         return ResponseEntity.status(HttpStatus.OK).body(ftpFacade.getAttachment(fileToken, fileType));
+    }
+
+    @PostMapping("/attachment/token")
+    public ResponseEntity<String> generateTokenForFile(@RequestBody GenerateNewTokenRequest request) {
+        return ResponseEntity.ok(attachmentFacade.generateEncryptedToken(request));
     }
 }
