@@ -8,14 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringBootApplication(scanBasePackages = {"com.dgcash"})
-@EnableFeignClients(basePackages = {"com.dgcash"})
-@EnableDiscoveryClient
-@OpenAPIDefinition( servers = {
-        @Server(url = "http://localhost:9097", description = "Attachment Service"),
-        @Server(url = "http://localhost:8081/api/v1", description = "Attachment through gateway Service")},
-
-        info = @Info(title = "Attachment Service", version = "1.0", description = "Attachment Service API"))
+@SpringBootApplication(scanBasePackages = {"com.test"})
 public class AttachmentServiceApplication {
 
     public static void main(String[] args) {
