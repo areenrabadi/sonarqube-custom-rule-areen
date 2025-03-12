@@ -1,0 +1,1 @@
+package sonar;import org.sonar.api.Plugin;public class MySonarPlugin implements Plugin {    @Override    public void define(Context context) {        context.addExtension(MyCustomRulesRegistrar.class);    }}

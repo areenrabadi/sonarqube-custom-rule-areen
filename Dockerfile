@@ -5,23 +5,16 @@
 #jdk image
 FROM openjdk:21-jdk-slim
 
-EXPOSE 9097
 # install
 
 # label for the image
-LABEL Description="attachment-service" Version="0.0.1"
+LABEL Description="sonarqube plugin" Version="1.0" Author="Areen Rabadi"
 
 # the version of the archive
-ARG VERSION=0.0.1
+ARG VERSION=1.0
 
 # mount the temp volume
 VOLUME /tmp
 
 # Add the service as app.jar
-ADD target/attachment-service-${VERSION}-SNAPSHOT.jar attachment-service.jar
-
-# touch the archive for timestamp
-RUN sh -c 'touch /attachment-service.jar'
-
-# entrypoint to the image on run
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/attachment-service.jar"]
+ADD target/sonarqube-custom-rule-areen-${VERSION}-SNAPSHOT.jar sonarqube-custom-rule-areen.jar
